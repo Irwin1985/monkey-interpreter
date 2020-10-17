@@ -247,6 +247,21 @@ class TestParser(unittest.TestCase):
         alternative = exp.alternative.statements[0]
         self.assert_identifier("y", alternative.expression)
 
+    def test_while_expression(self):
+        lexer = Lexer("while (1 < 2) { x }")
+        parser = Parser(lexer)
+        program = parser.parse_program()
+
+        self.assert_parser_errors(parser)
+        self.assertEqual(1, len(program.statements))
+
+        exp = program.statements[0].expression
+        self.assert_infix_expression(1, "<", 2, exp.condition)
+        self.assertEqual(1, len(exp.consequence.statements))
+
+        consequence = exp.consequence.statements[0]
+        self.assert_identifier("x", consequence.expression)
+
     def test_function_literal_parsing(self):
         lexer = Lexer("fn(x, y) { x + y; }")
         parser = Parser(lexer)

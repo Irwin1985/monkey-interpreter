@@ -145,6 +145,19 @@ class Evaluator:
         else:
             return NULL
 
+    def visit_WhileExpression(self, node, env):
+        while True:
+            condition = self.visit(node.condition, env)
+            if self.is_error(condition):
+                return condition
+
+            if not self.is_truthy(condition):
+                return None
+
+            consequence = self.visit(node.consequence, env)
+            if self.is_error(consequence):
+                return consequence
+
     def visit_ReturnStatement(self, node, env):
         val = self.visit(node.return_value, env)
         return val if self.is_error(val) else ReturnValue(val)

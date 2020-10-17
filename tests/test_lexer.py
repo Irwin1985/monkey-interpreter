@@ -30,7 +30,8 @@ class TestLexer(unittest.TestCase):
         "foobar"
         "foo bar"
         [1, 2];
-        {"foo": "bar"}
+        {"foo": "bar"};
+        while (true) {};
         """
         )
 
@@ -121,6 +122,14 @@ class TestLexer(unittest.TestCase):
             Token(Token.COLON, ":"),
             Token(Token.STRING, "bar"),
             Token(Token.RBRACE, "}"),
+            Token(Token.SEMICOLON, ";"),
+            Token(Token.WHILE, "while"),
+            Token(Token.LPAREN, "("),
+            Token(Token.TRUE, "true"),
+            Token(Token.RPAREN, ")"),
+            Token(Token.LBRACE, "{"),
+            Token(Token.RBRACE, "}"),
+            Token(Token.SEMICOLON, ";"),
             Token(Token.EOF, ""),
         ]
 

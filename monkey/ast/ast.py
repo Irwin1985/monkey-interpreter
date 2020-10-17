@@ -180,6 +180,19 @@ class IfExpression(Expression):
         return self.token.literal
 
 
+class WhileExpression(Expression):
+    def __init__(self, token):
+        self.token = token
+        self.condition = None
+        self.consequence = None
+
+    def __str__(self):
+        return f"while {self.condition} {{ {self.consequence} }}"
+
+    def token_literal(self):
+        return self.token.literal
+
+
 class CallExpression(Expression):
     def __init__(self, token, function):
         self.token = token

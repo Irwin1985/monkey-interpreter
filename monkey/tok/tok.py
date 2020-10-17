@@ -39,6 +39,7 @@ class Token:
     RETURN = "RETURN"
     EQ = "=="
     NOT_EQ = "!="
+    WHILE = "WHILE"
 
     KEYWORDS = {
         "fn": FUNCTION,
@@ -48,6 +49,7 @@ class Token:
         "if": IF,
         "else": ELSE,
         "return": RETURN,
+        "while": WHILE
     }
 
     def __init__(self, token_type, literal):

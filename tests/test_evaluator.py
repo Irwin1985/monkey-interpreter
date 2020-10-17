@@ -95,6 +95,12 @@ class TestEvaluator(unittest.TestCase):
             else:
                 self.assertIsInstance(actual, Null)
 
+    def test_while_expressions(self):
+        test = "let x = 10; while (x > 0) { let x = x - 1; }; x;"
+
+        actual = self.eval(test)
+        self.assert_integer_object(0, actual)
+
     def test_return_statements(self):
         tests = [
             ["return 10;", 10],

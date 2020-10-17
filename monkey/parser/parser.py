@@ -16,6 +16,7 @@ from ast.ast import (
     ArrayLiteral,
     IndexExpression,
     HashLiteral,
+WhileExpression
 )
 from tok.tok import Token, PRECEDENCES, Precedence
 
@@ -44,6 +45,7 @@ class Parser:
         self.register_prefix(Token.STRING, self.parse_string_literal)
         self.register_prefix(Token.LBRACKET, self.parse_array_literal)
         self.register_prefix(Token.LBRACE, self.parse_hash_literal)
+        self.register_prefix(Token.WHILE, self.parse_while_expression)
 
         self.register_infix(Token.PLUS, self.parse_infix_expression)
         self.register_infix(Token.MINUS, self.parse_infix_expression)
@@ -263,6 +265,26 @@ class Parser:
                 return None
 
             exp.alternative = self.parse_block_statement()
+
+        return exp
+
+    def parse_while_expression(self):
+        exp = WhileExpression(self.curr_token)
+
+        if not self.expect_peek(Token.LPAREN):
+            return None
+
+        self.next_token()
+
+        exp.condition = self.parse_expression(Precedence.LOWEST)
+
+        if not self.expect_peek(Token.RPAREN):
+            return None
+
+        if not self.expect_peek(Token.LBRACE):
+            return None
+
+        exp.consequence = self.parse_block_statement()
 
         return exp
 
