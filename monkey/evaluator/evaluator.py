@@ -73,17 +73,6 @@ class Evaluator:
 
         return self.apply_function(function, args)
 
-    def eval_expressions(self, exps, env):
-        result = []
-        for e in exps:
-            evaluated = self.visit(e, env)
-            if self.is_error(evaluated):
-                return [evaluated]
-
-            result.append(evaluated)
-
-        return result
-
     def visit_PrefixExpression(self, node, env):
         right = self.visit(node.right, env)
         if self.is_error(right):
@@ -120,14 +109,6 @@ class Evaluator:
             return Error(
                 f"unknown operator: {left.type().value} {node.operator} {right.type().value}"
             )
-
-    def eval_string_infix_expression(self, operator, left, right):
-        if operator != "+":
-            return Error(
-                f"unknown operator: {left.type().value} {operator} {right.type().value}"
-            )
-
-        return String(left.value + right.value)
 
     def visit_BlockStatement(self, node, env):
         result = None
@@ -208,6 +189,25 @@ class Evaluator:
 
         return Hash(pairs)
 
+    def eval_string_infix_expression(self, operator, left, right):
+        if operator != "+":
+            return Error(
+                f"unknown operator: {left.type().value} {operator} {right.type().value}"
+            )
+
+        return String(left.value + right.value)
+
+    def eval_expressions(self, exps, env):
+        result = []
+        for e in exps:
+            evaluated = self.visit(e, env)
+            if self.is_error(evaluated):
+                return [evaluated]
+
+            result.append(evaluated)
+
+        return result
+
     def eval_index_expression(self, left, index):
         if isinstance(left, Array) and isinstance(index, Integer):
             return self.eval_array_index_expression(left, index)
@@ -216,8 +216,7 @@ class Evaluator:
         else:
             return Error(f"index operator not supported {left.type().value}")
 
-    @staticmethod
-    def eval_array_index_expression(array, index):
+    def eval_array_index_expression(self, array, index):
         if index.value < 0 or index.value >= len(array.elements):
             return NULL
         return array.elements[index.value]
@@ -272,6 +271,11 @@ class Evaluator:
         else:
             return FALSE
 
+    def eval_minus_prefix_operator_expression(self, right):
+        if not isinstance(right, Integer):
+            return Error(f"unknown operator: -{right.type().value}")
+        return Integer(-right.value)
+
     def apply_function(self, fn, args):
         if isinstance(fn, Function):
             extended_env = self.extend_function_env(fn, args)
@@ -299,11 +303,6 @@ class Evaluator:
         if isinstance(obj, ReturnValue):
             return obj.value
         return obj
-
-    def eval_minus_prefix_operator_expression(self, right):
-        if not isinstance(right, Integer):
-            return Error(f"unknown operator: -{right.type().value}")
-        return Integer(-right.value)
 
     def is_truthy(self, obj):
         if obj == NULL:
