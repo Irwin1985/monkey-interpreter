@@ -147,9 +147,7 @@ class Evaluator:
 
     def visit_ReturnStatement(self, node, env):
         val = self.visit(node.return_value, env)
-        if self.is_error(val):
-            return val
-        return ReturnValue(val)
+        return val if self.is_error(val) else ReturnValue(val)
 
     def visit_ArrayLiteral(self, node, env):
         elements = self.eval_expressions(node.elements, env)
@@ -194,7 +192,6 @@ class Evaluator:
             return Error(
                 f"unknown operator: {left.type().value} {operator} {right.type().value}"
             )
-
         return String(left.value + right.value)
 
     def eval_expressions(self, exps, env):
@@ -262,14 +259,7 @@ class Evaluator:
             return Error(f"unknown operator: {operator}{right.type().value}")
 
     def eval_bang_operator_expression(self, right):
-        if right == TRUE:
-            return FALSE
-        elif right == FALSE:
-            return TRUE
-        elif right == NULL:
-            return TRUE
-        else:
-            return FALSE
+        return self.to_bool(right in (FALSE, NULL))
 
     def eval_minus_prefix_operator_expression(self, right):
         if not isinstance(right, Integer):
@@ -300,19 +290,10 @@ class Evaluator:
         return env
 
     def unwrap_return_value(self, obj):
-        if isinstance(obj, ReturnValue):
-            return obj.value
-        return obj
+        return obj.value if isinstance(obj, ReturnValue) else obj
 
     def is_truthy(self, obj):
-        if obj == NULL:
-            return False
-        elif obj == TRUE:
-            return True
-        elif obj == FALSE:
-            return False
-        else:
-            return True
+        return obj not in (NULL, FALSE)
 
     def is_error(self, obj):
         return obj is not None and isinstance(obj, Error)
