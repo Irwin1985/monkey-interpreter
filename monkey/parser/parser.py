@@ -16,7 +16,7 @@ from ast.ast import (
     ArrayLiteral,
     IndexExpression,
     HashLiteral,
-WhileExpression
+    WhileExpression,
 )
 from tok.tok import Token, PRECEDENCES, Precedence
 

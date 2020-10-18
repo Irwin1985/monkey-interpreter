@@ -49,7 +49,7 @@ class Token:
         "if": IF,
         "else": ELSE,
         "return": RETURN,
-        "while": WHILE
+        "while": WHILE,
     }
 
     def __init__(self, token_type, literal):

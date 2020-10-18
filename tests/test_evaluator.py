@@ -1,6 +1,6 @@
 import unittest
 
-from evaluator.evaluator import Evaluator
+from evaluator.nodevisitor import NodeVisitor, evaluate
 from lexer.lexer import Lexer
 from object.environment import Environment
 from object.object import Integer, Boolean, Null
@@ -341,7 +341,7 @@ class TestEvaluator(unittest.TestCase):
         lexer = Lexer(test_input)
         parser = Parser(lexer)
         program = parser.parse_program()
-        return Evaluator().evaluate(program, Environment())
+        return evaluate(program, Environment())
 
 
 if __name__ == "__main__":

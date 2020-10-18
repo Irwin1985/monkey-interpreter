@@ -1,6 +1,6 @@
 import sys
 
-from evaluator.evaluator import Evaluator
+from evaluator.nodevisitor import NodeVisitor
 from lexer.lexer import Lexer
 from object.environment import Environment
 from parser.parser import Parser
@@ -43,7 +43,7 @@ def repl():
 def run_program(p, env=None):
     env = Environment() if env is None else env
 
-    evaluator = Evaluator()
+    evaluator = NodeVisitor()
     lexer = Lexer(p)
     parser = Parser(lexer)
     program = parser.parse_program()
