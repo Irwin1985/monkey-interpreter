@@ -91,10 +91,10 @@ class IntegerLiteral(Expression):
         self.token = token
         self.value = value
 
-    def token_literal(self) -> str:
+    def token_literal(self):
         return self.token.literal
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.token.literal
 
 
